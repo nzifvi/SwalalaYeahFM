@@ -40,7 +40,10 @@ class Speaker:
         self.processingQueue = Queue()
 
     def speak(self, outputPath:str) -> str:
-        i = 0
+        file = open("AudioFiles/audioCount.txt", "w")
+        file.write(str(len(self.pastStories)))
+        file.close()
+
         while self.processingQueue.size() > 0:
             wavs, sampleRate = self.model.generate_custom_voice(
                 text=self.processingQueue.dequeue(),
@@ -48,10 +51,10 @@ class Speaker:
                 language = "english",
                 do_sample = False
             )
-            i += 1
+            wav = librosa.effects.pitch_shift(wavs[0], sr=sampleRate, n_steps=4)
             soundfile.write(
                 outputPath + str(i) + ".wav",
-                wavs[0],
+                wav,
                 sampleRate
             )
 
@@ -75,3 +78,4 @@ class Speaker:
 
     def clearAudioFiles(self, filePath:str) -> None:
         pass
+
