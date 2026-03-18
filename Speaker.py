@@ -49,9 +49,10 @@ class Speaker:
                 do_sample = False
             )
             i += 1
+            wav = librosa.effects.pitch_shift(wavs[0], sr=sampleRate, n_steps=4)
             soundfile.write(
                 outputPath + str(i) + ".wav",
-                wavs[0],
+                wav,
                 sampleRate
             )
 
@@ -75,3 +76,4 @@ class Speaker:
 
     def clearAudioFiles(self, filePath:str) -> None:
         pass
+
