@@ -4,6 +4,7 @@ print("Importing model...")
 from qwen_tts import Qwen3TTSModel
 import random
 from transformers import BitsAndBytesConfig
+import librosa
 
 class Queue:
     def __init__(self):
@@ -36,7 +37,7 @@ class Speaker:
             "durhhhhhh",
             "hahahahahahaha... HAHAHAHAHAHAHA..."
         ]
-        self.processingQueue = Queue
+        self.processingQueue = Queue()
 
     def speak(self, outputPath:str) -> str:
         i = 0
@@ -65,11 +66,12 @@ class Speaker:
         return newStories
 
     def mergeStories(self, stories:list) -> None:
-        self.processingQueue.enqueue(
-            "New stories for you! "
-        )
+        self.processingQueue.enqueue(item = "New stories for you! ")
         for story in stories:
             script = ""
             script += story["title"] + ": " + story["summary"] + "..." + random.choice(self.randomWords) + "..."
             self.processingQueue.enqueue(item = script)
-        self.processingQueue.enqueue("That is all!")
+        self.processingQueue.enqueue(item = "That is all!")
+
+    def clearAudioFiles(self, filePath:str) -> None:
+        pass

@@ -13,7 +13,7 @@ stories = scraper1.scrape(4)
 speaker.mergeStories(
     speaker.parseStories(stories)
 )
-speaker.speak("output")
+speaker.speak("AudioFiles/output")
 
 #while(True):
 #    currentTime    = time.time()
