@@ -1,32 +1,31 @@
+import os
+os.environ['PATH'] = r'C:\Users\benja\AppData\Local\Programs\Python\Python313\Lib\site-packages\static_sox\bin\sox-14.4.2-win32' + ';' + os.environ['PATH']
+
+import soundfile
 import torch
-import soundfile as sf
-import qwen_tts
+print("Importing model...")
+from qwen_tts import Qwen3TTSModel
 
-model = qwen_tts.Qwen3TTSModel.from_pretrained(
+print("Loading model weights...")
+model = Qwen3TTSModel.from_pretrained(
     "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
-    device_map="cuda:0",
-    dtype=torch.bfloat16,
-    attn_implementation="flash_attention_2",
+    token="your_new_token_here",
+    device_map="cuda",
+    torch_dtype=torch.bfloat16
 )
+print("Model loaded!")
 
-# single inference
-wavs, sr = model.generate_custom_voice(
-    text="其实我真的有发现，我是一个特别善于观察别人情绪的人。",
-    language="Chinese", # Pass `Auto` (or omit) for auto language adaptive; if the target language is known, set it explicitly.
-    speaker="Vivian",
-    instruct="用特别愤怒的语气说", # Omit if not needed.
-)
-sf.write("output_custom_voice.wav", wavs[0], sr)
+def speak(model: Qwen3TTSModel, text: str, speaker: str = "uncle_fu", outputPath: str = "output.wav") -> str:
+    print(f"Generating speech for: {text}")
+    wavs, sample_rate = model.generate_custom_voice(
+        text=text,
+        speaker=speaker,
+        language="english",
+        do_sample=True
+    )
+    print("Speech generated, writing file...")
+    soundfile.write(outputPath, wavs[0], sample_rate)
+    print(f"Done! Saved to {outputPath}")
+    return outputPath
 
-# batch inference
-wavs, sr = model.generate_custom_voice(
-    text=[
-        "其实我真的有发现，我是一个特别善于观察别人情绪的人。",
-        "She said she would be here by noon."
-    ],
-    language=["Chinese", "English"],
-    speaker=["Vivian", "Ryan"],
-    instruct=["", "Very happy."]
-)
-sf.write("output_custom_voice_1.wav", wavs[0], sr)
-sf.write("output_custom_voice_2.wav", wavs[1], sr)
+speak(model, "hello. i am a soldier. i have been homeless for nearly 1000 nights. 1000 nights i have nearly been homeless. i served in syria. syria")
