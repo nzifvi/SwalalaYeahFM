@@ -44,6 +44,7 @@ class Speaker:
         file.write(str(len(self.pastStories)))
         file.close()
 
+        i = 0
         while self.processingQueue.size() > 0:
             wavs, sampleRate = self.model.generate_custom_voice(
                 text=self.processingQueue.dequeue(),
@@ -51,6 +52,7 @@ class Speaker:
                 language = "english",
                 do_sample = False
             )
+            i += 1
             wav = librosa.effects.pitch_shift(wavs[0], sr=sampleRate, n_steps=4)
             soundfile.write(
                 outputPath + str(i) + ".wav",
