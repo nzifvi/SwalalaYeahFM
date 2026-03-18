@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swalala yeah Radio</title>
+</head>
+<body>
+    <h1> Radio </h1>
+    <button onclick="test()">Test backend</button>
+    <p id="result"></p>
+
+    <script>
+        async function test() {
+            const res = await fetch("http://localhost:8000/hello");
+            const data = await res.json();
+            document.getElementById("result").innerText = data.message;
+        }
+    </script>
+</body>
+</html>
